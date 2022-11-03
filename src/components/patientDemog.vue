@@ -56,9 +56,12 @@
       >{{ patientdata.managingOrganization.display }}<br />
       <hr />
       <strong>Access code:</strong>
+      <strong>Access code:</strong>
       <p class="ml-2" style="word-break: break-all">{{ accesstoken }}</p>
       <strong>Patient Resource:</strong>
       <pre>{{ patientdata }}</pre>
+      <strong>Observation Resource:</strong>
+      <pre>{{ observationdata }}</pre>      
     </div>
   </div>
 </template>
@@ -73,7 +76,9 @@ export default {
       accesstoken: "",
       patient: "",
       patientdata: {},
+      immunizationdata: {},
       clientId: "a276192d-1e62-4e11-9ff8-a76728fee870", // Replace with your client id
+      clientsecret: "Lgtnk2JAg4uDOOmelITa69b6K4IIvd6VDCTxpMhWCZk8XFnwslxejNK76LmHyrvOeCWAWmvgLyiHQVMplTNi8w==",
       redirect: import.meta.env.PROD
         ? "https://lucid-wozniak-940eae.netlify.app"
         : "http://localhost:3000",
@@ -128,6 +133,19 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+        /* get Vitals from Observatrion*/
+      await axios
+      .get(
+        `https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4/Observation?patient=${this.patient}`,
+        { headers: { Authorization: `Bearer ${this.accesstoken}` } }
+      )
+      .then((response) => {
+        this.observationdata = response.data;
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   },
 };
