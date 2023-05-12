@@ -78,7 +78,7 @@ export default {
       patientdata: {},
       immunizationdata: {},
       observationdata: {},
-      clientid: "737fc04b-0179-4d9e-85f8-c1be62461df2", // clientId: "a276192d-1e62-4e11-9ff8-a76728fee870", // Replace with your client id
+      clientId: "6079e18c-b8d7-48a8-b87a-e5a74b68e0af", // "a276192d-1e62-4e11-9ff8-a76728fee870", // Replace with your client id
       clientsecret: "Lgtnk2JAg4uDOOmelITa69b6K4IIvd6VDCTxpMhWCZk8XFnwslxejNK76LmHyrvOeCWAWmvgLyiHQVMplTNi8w==",
       redirect: import.meta.env.PROD
         ? "https://lucid-wozniak-940eae.netlify.app"
@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     authorizeLink() {
-      return `https://authorization.cerner.com/tenants/ec2458f2-1e24-41c8-b71b-0e701af7583d/protocols/oauth2/profiles/smart-v1/personas/patient/authorize?response_type=code&redirect_uri=${this.redirect}&client_id=${this.clientId}&state=1234&scope=patient/*.read`;
+      return `https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize?response_type=code&redirect_uri=${this.redirect}&client_id=${this.clientId}&state=1234&scope=patient/*.read`;
     },
   },
   async mounted() {
@@ -107,7 +107,7 @@ export default {
       };
       await axios
         .post(
-          "https://authorization.cerner.com/tenants/ec2458f2-1e24-41c8-b71b-0e701af7583d/protocols/oauth2/profiles/smart-v1/token",
+          "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token",
           params,
           config
         )
@@ -124,7 +124,7 @@ export default {
     if (this.accesstoken != "") {
       await axios
         .get(
-          `https://fhir-myrecord.cerner.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Patient/${this.patient}`,
+          `https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4/Patient/${this.patient}`,
           { headers: { Authorization: `Bearer ${this.accesstoken}` } }
         )
         .then((response) => {
@@ -140,7 +140,7 @@ export default {
               /* get Vitals from Observatrion*/
       await axios
         .get(
-        `https://fhir-myrecord.cerner.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/MedicationRequest/${this.patient}`,
+        `https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4/MedicationRequest/${this.patient}`,
         { headers: { Authorization: `Bearer ${this.accesstoken}` } } 
         )
         .then((response) => {
